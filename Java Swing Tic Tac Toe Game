@@ -1,0 +1,146 @@
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.io.IOException;
+import java.util.Scanner;
+ class tictac {
+    // tictactoe game
+    private String[][] bString; // two d array
+    private static final int ROWS = 3; // for rows
+    private static final int COLUMNS = 3; // for colums
+    private String regex = "\\s{3}";
+
+
+     // Tictactoe constructor
+
+public tictac() {
+        bString = new String[ROWS][COLUMNS];
+        this.createBorad();
+//        this.winXtest();
+    }
+
+
+     // initializing board and fill with empty spaces
+
+public void createBorad() {
+        for(int i = 0; i < ROWS; i++) {
+            for(int j = 0; j < COLUMNS; j++) {
+                bString[i][j] = "   ";
+            }
+        }
+    }
+
+
+   // setPlay method will set player's move
+public void setPlay(int i, int j, String player) {
+        if(bString[i][j].matches(regex))
+            bString[i][j] = " "+player+" ";
+    }
+
+
+     // finding winners
+
+    public boolean isGameOver() {
+        //checking rows
+        for(int i = 0; i < ROWS; i++) {
+            if(!bString[i][0].matches(regex) && bString[i][0].equals(bString[i][1]) && bString[i][1].equals(bString[i][2])) {
+                return true;
+            }
+        }
+        //checking columns
+
+        for(int j = 0; j < COLUMNS; j++) {
+            if(!bString[0][j].matches(regex) && bString[0][j].equals(bString[1][j]) && bString[1][j].equals(bString[2][j]))
+                return true;
+        }
+        //checking diagonals
+        if(!bString[0][0].matches(regex) && bString[0][0].equals(bString[1][1]) && bString[1][1].equals(bString[2][2]))
+            return true;
+        if(!bString[0][2].matches(regex) && bString[0][2].equals(bString[1][1]) && bString[1][1].equals(bString[2][0]))
+            return true;
+        //no body's won
+        return false;
+
+    }
+
+
+  /// Print board to screen
+    // return strBoard
+
+    public String print() {
+        String strBoard = "";
+        for(int i = 0; i < ROWS; i++) {
+            for(int j = 0; j < COLUMNS; j++) {
+                if(j == COLUMNS-1)
+                    strBoard += bString[i][j];
+                else
+                    strBoard += bString[i][j] + "|";
+            }
+            if(i != ROWS-1)
+                strBoard += "\n---+---+---\n";
+        }
+        return strBoard;
+    }
+
+
+ //  test unit 1st column X
+
+    public void winXtest() {
+        for(int i = 0; i < ROWS; i++) {
+            for(int j = 0; j < COLUMNS; j++) {
+                if(j == 0)
+                    bString[i][j] = " X ";
+                else
+                    bString[i][j] = "   ";
+            }
+        }
+    }
+ // write to the text file the game results the date time and who was the winner 
+
+    public void writeintoFile(String data) throws IOException {
+        Date date = new Date();
+        File file = new File("TicTacToe.txt");
+        PrintWriter printWriter = new PrintWriter(file);
+      printWriter.write("\n  "+date+ "  " +data+"   wins!");
+      printWriter.close();
+    }
+
+}
+
+public class  HW_Final_Prog
+        {
+            public static void main(String[] args) throws IOException {
+                // taking object of Scanner for input operations
+                Scanner input = new Scanner(System.in);
+                // creating the object of the tictac class
+                tictac game = new tictac();
+               // initailize the String for X playes
+                String player = "X";
+                do {
+                    System.out.println(game.print()); // print the borad
+                    System.out.println("enter row for " + player + " or -1 to exit: ");
+                    int row = input.nextInt(); // taking input
+
+                    if(row == -1)
+                        break; // break the case if it is true
+                    System.out.println("enter column for " + player + ": ");
+                    int column = input.nextInt(); // taking input
+
+                    game.setPlay(row,  column, player); // set the rows colums and playes in setPlay function
+                    if(game.isGameOver()) {
+                        game.writeintoFile(player);
+                        System.out.println(game.print() + "\n" + player +" wins!"); // if user win print this pint
+                        break;  // break the case if it is true
+                    }
+                    if(player == "X") {
+                        player = "O";
+                    }
+                    else {
+                        player = "X";
+                    }
+                }while(true); //  while(true) contiue the game
+                System.out.println("Goodbye!..");
+
+            }
+        }
